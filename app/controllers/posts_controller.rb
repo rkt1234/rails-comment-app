@@ -4,8 +4,7 @@ class PostsController < ApplicationController
 
   # GET /posts
   def index
-    # Fetch only posts belonging to the logged-in user
-    @posts = current_user.posts
+    @posts = Post.all
   end
 
   # GET /posts/:id
@@ -29,6 +28,7 @@ class PostsController < ApplicationController
 
   # GET /posts/:id/edit
   def edit
+    redirect_to posts_path, alert: 'You cannot edit this post.' unless @post.user == current_user
   end
 
   # PATCH/PUT /posts/:id
@@ -42,22 +42,26 @@ class PostsController < ApplicationController
 
   # DELETE /posts/:id
   def destroy
-    @post.destroy
-    redirect_to posts_url, notice: 'Post was successfully destroyed.'
+    if @post.user == current_user
+      @post.destroy
+      redirect_to posts_url, notice: 'Post was successfully destroyed.'
+    else
+      redirect_to posts_url, alert: 'You cannot delete this post.'
+    end
   end
 
   private
 
   # Set the post for show, edit, update, and destroy actions
   def set_post
-    # Ensure the post belongs to the logged-in user to prevent unauthorized access
-    @post = current_user.posts.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    redirect_to posts_url, alert: 'Post not found.'
+    @post = Post.find_by(id: params[:id])
+    if @post.nil? || @post.user != current_user
+      redirect_to posts_url, alert: 'Post not found or you are not authorized to access it.'
+    end
   end
 
   # Only allow a list of trusted parameters through
   def post_params
-    params.require(:post).permit(:title, :body) # No user_id here
+    params.require(:post).permit(:title, :body, :image) # Permit :image parameter
   end
 end

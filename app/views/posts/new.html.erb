@@ -1,6 +1,6 @@
 <h1>New Post</h1>
 
-<%= form_with(model: @post, local: true) do |form| %>
+<%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
   <% if @post.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
@@ -12,19 +12,30 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :title %>
-    <%= form.text_field :title %>
+  <div class="form-container">
+    <div class="field">
+      <%= form.label :title, class: 'form-label' %>
+      <%= form.text_field :title, class: 'form-input' %>
+    </div>
+
+    <div class="field">
+      <%= form.label :body, class: 'form-label' %>
+      <%= form.text_area :body, class: 'form-textarea' %>
+    </div>
+
+    <!-- New Image Upload Field -->
+    <div class="field">
+      <%= form.label :image, 'Upload Image', class: 'form-label' %>
+      <%= form.file_field :image, class: 'form-input' %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit 'Create Post', class: 'btn-submit' %>
+    </div>
   </div>
 
-  <div class="field">
-    <%= form.label :body %>
-    <%= form.text_area :body %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
+  <!-- Centered Back Button -->
+  <div class="back-btn-container">
+    <%= link_to 'Back', posts_path, class: 'btn-back' %>
   </div>
 <% end %>
-
-<%= link_to 'Back', posts_path %>

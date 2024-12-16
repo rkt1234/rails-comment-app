@@ -1,4 +1,22 @@
 <h1><%= @post.title %></h1>
 <p><%= @post.body %></p>
-<%= link_to 'Edit', edit_post_path(@post) %> |
-<%= link_to 'Back', posts_path %>
+
+<!-- Display the uploaded image (if any) -->
+<% if @post.image.present? %>
+  <div class="post-image-container">
+    <%= image_tag @post.image.url, alt: "Post Image", class: "post-image" %>
+  </div>
+<% end %>
+
+<%= link_to 'Edit', edit_post_path(@post), class: 'btn btn-edit' %> 
+<%= link_to 'Back', posts_path, class: 'btn btn-back' %>
+
+<!-- Comment Section -->
+<h3>Comments</h3>
+<%= form_with(model: [@post, Comment.new], local: true) do |form| %>
+  <div class="form-group">
+    <%= form.label :comment, "Write a Comment" %>
+    <%= form.text_area :comment, rows: 3, class: "form-control" %>
+  </div>
+  <%= form.submit "Add Comment", class: "btn btn-primary" %>
+<% end %>

@@ -1,6 +1,6 @@
 <h1>Edit Post</h1>
 
-<%= form_with(model: @post, local: true) do |form| %>
+<%= form_with(model: @post, local: true, html: { multipart: true }) do |form| %>
   <% if @post.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
@@ -22,8 +22,22 @@
     <%= form.text_area :body %>
   </div>
 
+  <!-- Display the current image (if any) -->
+  <% if @post.image.present? %>
+    <div class="field">
+      <p>Current Image:</p>
+      <%= image_tag @post.image.url, alt: "Current Image", class: "current-image" %>
+    </div>
+  <% end %>
+
+  <!-- File input for updating the image -->
+  <div class="field">
+    <%= form.label :image, "Upload a New Image" %>
+    <%= form.file_field :image %>
+  </div>
+
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit "Update Post" %>
   </div>
 <% end %>
 

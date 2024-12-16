@@ -1,13 +1,40 @@
 <h1>Posts</h1>
-<%= link_to 'New Post', new_post_path %>
-<%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure you want to log out?' } %>
 
-<ul>
-  <% @posts.each do |post| %>
-    <li>
-      <%= link_to post.title, post_path(post) %> |
-      <%= link_to 'Edit', edit_post_path(post) %> |
-      <%= link_to 'Delete', post_path(post), method: :delete, data: { confirm: 'Are you sure?' } %>
-    </li>
-  <% end %>
-</ul>
+<div class="links-container">
+  <%= link_to 'New Post', new_post_path, class: 'btn btn-primary' %>
+  <%= link_to 'Logout', destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure you want to log out?' }, class: 'btn btn-danger logout' %>
+</div>
+
+<table class="posts-list">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Comments</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr class="post-item">
+        <td>
+          <%= link_to post.title, post_path(post), class: 'post-title' %>
+        </td>
+        <td>
+          <!-- Display all comments for the post separated by commas -->
+          <%= post.comments.pluck(:comment).join(', ') %>
+        </td>
+        <td>
+          <% if post.user_id == current_user.id %>
+            <%= link_to 'Edit', edit_post_path(post), class: 'btn btn-warning' %>
+          <% end %>
+        </td>
+        <td>
+          <% if post.user_id == current_user.id %>
+            <%= link_to 'Delete', post_path(post), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
